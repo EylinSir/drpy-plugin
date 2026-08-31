@@ -90,7 +90,7 @@ curl -X POST "http://localhost:57574/" \
     </tr>
     <tr>
       <td style="text-align:center;">dns</td>
-      <td style="text-align:center;">指定DNS服务器</td>
+      <td style="text-align:center;">指定DNS服务器（解析结果缓存5分钟）</td>
       <td style="text-align:center;">8.8.8.8</td>
       <td style="text-align:center;">-dns 127.0.0.1:5335</td>
     </tr>
@@ -99,6 +99,24 @@ curl -X POST "http://localhost:57574/" \
       <td style="text-align:center;">认证密钥，用于API访问验证</td>
       <td style="text-align:center;">drpys</td>
       <td style="text-align:center;">-auth "mykey123"</td>
+    </tr>
+    <tr>
+      <td style="text-align:center;">threads</td>
+      <td style="text-align:center;">自动线程档的上限（URL传thread可覆盖，硬上限32）</td>
+      <td style="text-align:center;">16</td>
+      <td style="text-align:center;">-threads 8</td>
+    </tr>
+    <tr>
+      <td style="text-align:center;">window</td>
+      <td style="text-align:center;">预读窗口大小(MB)：已下载但未被播放器消费的最大数据量</td>
+      <td style="text-align:center;">16</td>
+      <td style="text-align:center;">-window 8</td>
+    </tr>
+    <tr>
+      <td style="text-align:center;">seg</td>
+      <td style="text-align:center;">多线程分段大小（URL未传size参数时生效）</td>
+      <td style="text-align:center;">2M</td>
+      <td style="text-align:center;">-seg 4M</td>
     </tr>
   </tbody>
 </table>
@@ -263,14 +281,14 @@ headers和url可进行base64编码，以避免sni阻断
     <tr>
       <td style="text-align:center;">size/chunkSize</td>
       <td style="text-align:center;">可选</td>
-      <td style="text-align:center;">单次分片下载数据大小。<br>支持单位（K/M/B），纯数字默认单位为KB。<br>系统限制：最小32KB，最大10MB。</td>
-      <td style="text-align:center;">128KB</td>
+      <td style="text-align:center;">多线程分段大小：单个HTTP Range请求拉取的连续区间。<br>支持单位（K/M/B），纯数字默认单位为KB。<br>系统限制：最小128KB，最大32MB。</td>
+      <td style="text-align:center;">2M</td>
     </tr>
     <tr>
       <td style="text-align:center;">thread</td>
       <td style="text-align:center;">可选</td>
-      <td style="text-align:center;">并发线程数</td>
-      <td style="text-align:center;">动态调节</td>
+      <td style="text-align:center;">并发线程数（1-32）。<br>不传时按文件大小自动分档：&lt;8MB→2线程，&lt;64MB→6，&lt;256MB→12，更大→16（可用 -threads 调整上限）</td>
+      <td style="text-align:center;">自动分档</td>
     </tr>
     <tr>
       <td style="text-align:center;">form</td>
